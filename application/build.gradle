@@ -2,3 +2,7 @@ plugins {
     id 'buildlogic.java-application-conventions'
 }
 
+application {
+    mainClass = 'com.nexalyst.application.Main'
+}
+
