@@ -4,4 +4,4 @@ plugins {
 
 rootProject.name = 'Nexalyst'
 
-include 'application'
+include 'apps:backend-core'

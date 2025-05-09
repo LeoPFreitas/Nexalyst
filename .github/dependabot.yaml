@@ -1,17 +1,42 @@
 version: 2
 updates:
-  # Main project dependencies
   - package-ecosystem: "gradle"
-    directory: "/" # root project
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+    allow:
+      - dependency-type: "direct"
+    versioning-strategy: increase
+
+  - package-ecosystem: "gradle"
+    directory: "/gradle"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
     commit-message:
       prefix: "deps"
 
-  # buildSrc dependencies
   - package-ecosystem: "gradle"
     directory: "/buildSrc"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "gradle"
+    directory: "/apps/backend-core"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "npm"
+    directory: "/apps/webapp"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
