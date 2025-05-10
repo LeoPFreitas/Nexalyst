@@ -29,23 +29,14 @@ export default async function RootLayout({children,}: Readonly<{ children: React
 
   return (
     <html lang="en" suppressHydrationWarning>
-    <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}
-    >
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
+    <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <SidebarProvider defaultOpen={defaultOpen}>
         <AppSidebar/>
-        <main className="w-full">
+        <div className="flex-1 flex flex-col min-h-screen">
           <Navbar/>
-          <div className="px-4">
-            {children}
-          </div>
-        </main>
+          <main className="flex-1 p-4">{children}</main>
+        </div>
       </SidebarProvider>
     </ThemeProvider>
     </body>
