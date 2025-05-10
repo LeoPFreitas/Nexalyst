@@ -1,0 +1,60 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Nexalyst API",
+    "description": "Risk Assessment for Enterprise-level Applications",
+    "version": "1.0.0",
+    "summary": "Nexalyst API for Risk Assessment",
+    "contact": {
+      "name": "Nexalyst Team",
+      "url": "https://nexalyst.com",
+      "email": "team@nexalyst.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "description": "Nexalyst API Server (Production)",
+      "url": "https://api.nexalyst.com/v1"
+    },
+    {
+      "description": "Nexalyst API Server (Staging)",
+      "url": "https://staging-api.nexalyst.com/v1"
+    },
+    {
+      "description": "Nexalyst API Server (Development)",
+      "url": "https://dev-api.nexalyst.com/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentication",
+      "description": "Endpoints related to user authentication and management."
+    }
+  ],
+  "paths": {
+  },
+  "security": [
+    {
+      "BearerAuth": [
+        "read:all",
+        "write:all"
+      ]
+    },
+    {
+      "ApiKeyAuth": [
+        "read:all",
+        "write:all"
+      ]
+    },
+    {
+      "OAuth2": [
+        "read:all",
+        "write:all"
+      ]
+    }
+  ]
+}

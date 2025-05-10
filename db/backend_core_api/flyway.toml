@@ -1,0 +1,31 @@
+databaseType = "PostgreSql"
+id = "4047c160-23f2-46c5-93e1-d4a19ed2aec2"
+name = "Nexalyst Backend Core API"
+
+[flyway]
+locations = [ "filesystem:migrations" ]
+mixed = true
+outOfOrder = true
+schemaModelLocation = "schema-model"
+validateMigrationNaming = true
+
+  [flyway.check]
+  majorTolerance = 0
+
+[flywayDesktop]
+developmentEnvironment = "development"
+shadowEnvironment = "shadow"
+
+[redgateCompare]
+filterFile = "filter.rgf"
+
+[redgateCompare.postgresql.options.behavior]
+detectRenames = "identical-only"
+
+[redgateCompare.postgresql.options.ignores]
+ignoreNewlinesInTextObjects = "off"
+
+[environments.nexalyst-backend-core-api]
+url = "jdbc:postgresql://localhost:5432/nexalyst_backend_core_api"
+schemas = [ "public" ]
+displayName = "Nexalyst Backend Core API"

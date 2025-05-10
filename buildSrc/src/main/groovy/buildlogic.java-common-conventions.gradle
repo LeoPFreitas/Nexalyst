@@ -9,11 +9,17 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation libs.junit.jupiter
-    testRuntimeOnly libs.junit.platform.launcher
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
 
-    implementation libs.slf4j.api
+dependencies {
+    testImplementation libs.junit.jupiter.get()
+    testRuntimeOnly libs.junit.platform.launcher.get()
+
+    implementation libs.slf4j.api.get()
 }
 
 java {
