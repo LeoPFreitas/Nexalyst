@@ -27,6 +27,7 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+spring-resource-server = { module = "org.springframework.boot:spring-boot-starter-oauth2-resource-server" }
 spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor" }
 lombok = { module = "org.projectlombok:lombok" }
 postgresql = { module = "org.postgresql:postgresql" }
