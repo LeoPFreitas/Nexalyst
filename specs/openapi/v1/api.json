@@ -18,15 +18,15 @@
   "servers": [
     {
       "description": "Nexalyst API Server (Production)",
-      "url": "https://api.nexalyst.com/v1"
+      "url": "https://api.nexalyst.com"
     },
     {
       "description": "Nexalyst API Server (Staging)",
-      "url": "https://staging-api.nexalyst.com/v1"
+      "url": "https://staging-api.nexalyst.com"
     },
     {
       "description": "Nexalyst API Server (Development)",
-      "url": "https://dev-api.nexalyst.com/v1"
+      "url": "https://dev-api.nexalyst.com"
     }
   ],
   "tags": [
