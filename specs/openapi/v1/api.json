@@ -31,30 +31,161 @@
   ],
   "tags": [
     {
-      "name": "Authentication",
-      "description": "Endpoints related to user authentication and management."
+      "name": "Organizations",
+      "description": "Endpoints related to organization management."
     }
   ],
   "paths": {
-  },
-  "security": [
-    {
-      "BearerAuth": [
-        "read:all",
-        "write:all"
-      ]
-    },
-    {
-      "ApiKeyAuth": [
-        "read:all",
-        "write:all"
-      ]
-    },
-    {
-      "OAuth2": [
-        "read:all",
-        "write:all"
-      ]
+    "/api/v1/organizations/register": {
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "organization:registerOrganization"
+            ]
+          }
+        ],
+        "summary": "Register a new organization",
+        "description": "Creates a new organization. If an organization with the specified name already exists, the operation will fail.",
+        "requestBody": {
+          "description": "Organization registration request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationRegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Organization created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDTO"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A conflict occurred due to an existing organization with the same name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                },
+                "examples": {
+                  "duplicateOrganization": {
+                    "summary": "Duplicate organization error",
+                    "value": {
+                      "title": "Organization registration failed",
+                      "status": 409,
+                      "detail": "An organization with this name already exists",
+                      "organizationName": "ExampleOrg",
+                      "timestamp": 1637590238000,
+                      "type": "/errors/duplicate-organization"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
-  ]
+  },
+  "components": {
+    "schemas": {
+      "OrganizationRegistrationRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the organization.",
+            "example": "ExampleOrg"
+          },
+          "description": {
+            "type": "string",
+            "description": "Organization description.",
+            "example": "This is an example organization."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "OrganizationDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the organization.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the organization.",
+            "example": "ExampleOrg"
+          },
+          "description": {
+            "type": "string",
+            "description": "Organization description.",
+            "example": "This is an example organization."
+          }
+        }
+      },
+      "ProblemDetail": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "A short, human-readable summary of the problem."
+          },
+          "status": {
+            "type": "integer",
+            "description": "The HTTP status code."
+          },
+          "detail": {
+            "type": "string",
+            "description": "A detailed explanation of the problem."
+          },
+          "organizationName": {
+            "type": "string",
+            "description": "Name of the organization causing the conflict. Applicable for specific error cases.",
+            "example": "ExampleOrg"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The time the error occurred.",
+            "example": 1637590238000
+          },
+          "type": {
+            "type": "string",
+            "description": "A URI reference that identifies the problem type.",
+            "example": "/errors/duplicate-organization"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://example.com/oauth/token",
+            "scopes": {
+              "organization:registerOrganization": "Permission to register an organization"
+            }
+          }
+        }
+      }
+    }
+  }
 }
