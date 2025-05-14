@@ -1,17 +1,16 @@
 package com.nexalyst.apps.backend_core_api.api;
 
-import com.nexalyst.apps.backend_core_api.dto.OrganizationDTO;
-import com.nexalyst.apps.backend_core_api.dto.OrganizationRegistrationRequest;
+import com.nexalyst.apps.backend_core_api.api.request.RegisterOrganizationRequest;
+import com.nexalyst.apps.backend_core_api.api.request.UpdateOrganizationRequest;
+import com.nexalyst.apps.backend_core_api.api.response.RegisterOrganizationResponse;
+import com.nexalyst.apps.backend_core_api.api.response.UpdateOrganizationResponse;
 import com.nexalyst.apps.backend_core_api.service.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -22,11 +21,12 @@ public class OrganizationApi {
     private final OrganizationService organizationService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerOrganization(@Valid @RequestBody OrganizationRegistrationRequest request) {
+    public ResponseEntity<?> registerOrganization(@Valid @RequestBody RegisterOrganizationRequest request) {
         try {
-            OrganizationDTO createdOrganization = organizationService.createOrganization(request);
+            RegisterOrganizationResponse createdOrganization = organizationService.createOrganization(request);
             return new ResponseEntity<>(createdOrganization, HttpStatus.CREATED);
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
+
             if (e.getMessage().contains("organizations_name_key")) {
                 ProblemDetail problem = ProblemDetail.forStatusAndDetail(
                         HttpStatus.CONFLICT,
@@ -40,6 +40,12 @@ public class OrganizationApi {
             }
             throw e;
         }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateOrganization(@Valid @RequestBody UpdateOrganizationRequest updateOrganizationRequest) {
+        UpdateOrganizationResponse updatedOrganization = organizationService.updateOrganization(updateOrganizationRequest);
+        return ResponseEntity.ok(updatedOrganization);
     }
 }
 
