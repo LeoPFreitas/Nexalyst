@@ -2,8 +2,7 @@ package com.nexalyst.apps.backend_core_api.api;
 
 import com.nexalyst.apps.backend_core_api.api.request.RegisterOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.request.UpdateOrganizationRequest;
-import com.nexalyst.apps.backend_core_api.api.response.RegisterOrganizationResponse;
-import com.nexalyst.apps.backend_core_api.api.response.UpdateOrganizationResponse;
+import com.nexalyst.apps.backend_core_api.api.response.OrganizationId;
 import com.nexalyst.apps.backend_core_api.service.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,7 @@ public class OrganizationApi {
     @PostMapping("/register")
     public ResponseEntity<?> registerOrganization(@Valid @RequestBody RegisterOrganizationRequest request) {
         try {
-            RegisterOrganizationResponse createdOrganization = organizationService.createOrganization(request);
+            OrganizationId createdOrganization = organizationService.createOrganization(request);
             return new ResponseEntity<>(createdOrganization, HttpStatus.CREATED);
         } catch (org.springframework.dao.DataIntegrityViolationException e) {
 
@@ -44,7 +43,7 @@ public class OrganizationApi {
 
     @PutMapping("/update")
     public ResponseEntity<?> updateOrganization(@Valid @RequestBody UpdateOrganizationRequest updateOrganizationRequest) {
-        UpdateOrganizationResponse updatedOrganization = organizationService.updateOrganization(updateOrganizationRequest);
+        OrganizationId updatedOrganization = organizationService.updateOrganization(updateOrganizationRequest);
         return ResponseEntity.ok(updatedOrganization);
     }
 }

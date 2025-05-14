@@ -2,8 +2,7 @@ package com.nexalyst.apps.backend_core_api.service;
 
 import com.nexalyst.apps.backend_core_api.api.request.RegisterOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.request.UpdateOrganizationRequest;
-import com.nexalyst.apps.backend_core_api.api.response.RegisterOrganizationResponse;
-import com.nexalyst.apps.backend_core_api.api.response.UpdateOrganizationResponse;
+import com.nexalyst.apps.backend_core_api.api.response.OrganizationId;
 import com.nexalyst.apps.backend_core_api.entity.OrganizationEntity;
 import com.nexalyst.apps.backend_core_api.exceptions.DuplicateOrganizationNameException;
 import com.nexalyst.apps.backend_core_api.repository.OrganizationRepository;
@@ -46,7 +45,7 @@ class OrganizationServiceTest {
         when(organizationRepository.save(any(OrganizationEntity.class))).thenReturn(savedEntity);
 
         // Act
-        RegisterOrganizationResponse result = organizationService.createOrganization(request);
+        OrganizationId result = organizationService.createOrganization(request);
 
         // Assert
         assertNotNull(result);
@@ -75,7 +74,7 @@ class OrganizationServiceTest {
         when(organizationRepository.save(any(OrganizationEntity.class))).thenReturn(updatedEntity);
 
         // Act
-        UpdateOrganizationResponse result = organizationService.updateOrganization(request);
+        OrganizationId result = organizationService.updateOrganization(request);
 
         // Assert
         assertNotNull(result);
