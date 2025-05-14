@@ -1,8 +1,8 @@
-package com.nexalyst.apps.backend_core_api.dto;
+package com.nexalyst.apps.backend_core_api.api.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record OrganizationRegistrationRequest(
+public record RegisterOrganizationRequest(
         @NotBlank(message = "Organization name is required")
         String name,
         String description
