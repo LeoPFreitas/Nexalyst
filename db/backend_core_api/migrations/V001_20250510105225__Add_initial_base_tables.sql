@@ -8,9 +8,10 @@ CREATE TABLE organizations
 CREATE TABLE projects
 (
     id              SERIAL PRIMARY KEY,
-    name            VARCHAR(255) UNIQUE NOT NULL,
+    name            VARCHAR(255) NOT NULL,
     organization_id UUID REFERENCES organizations (id) ON DELETE CASCADE,
-    description     TEXT
+    description     TEXT,
+    UNIQUE (organization_id, name)
 );
 
 CREATE TABLE systems

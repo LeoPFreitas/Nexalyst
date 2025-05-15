@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -27,9 +29,12 @@ public class OrganizationEntity {
     @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
-    @Column(name = "name", nullable = false, unique = true, length = 255)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @Column(name = "description")
     private String description;
+
+    @OneToMany(mappedBy = "organization")
+    private Set<ProjectEntity> projectEntities = new LinkedHashSet<>();
 }
