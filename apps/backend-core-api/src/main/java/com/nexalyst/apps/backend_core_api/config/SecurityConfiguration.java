@@ -14,6 +14,8 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/v1/organizations/register").hasAuthority("SCOPE_organization:registerOrganization")
+                        .requestMatchers("/api/v1/organizations/update").hasAuthority("SCOPE_organization:updateOrganization")
+                        .requestMatchers("/api/v1/organizations/createProject").hasAuthority("SCOPE_organization:createProject")
                         .anyRequest().denyAll()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
