@@ -97,6 +97,114 @@
           }
         }
       }
+    },
+    "/api/v1/organizations/update": {
+      "put": {
+        "tags": [
+          "Organizations"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "organization:updateOrganization"
+            ]
+          }
+        ],
+        "summary": "Update an organization",
+        "description": "Updates an existing organization. If an organization with the specified name already exists, the operation will fail.",
+        "requestBody": {
+          "description": "Organization update request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Organization updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationId"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A conflict occurred due to an existing organization with the same name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/organizations/createProject": {
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "organization:createProject"
+            ]
+          }
+        ],
+        "summary": "Create a new project",
+        "description": "Creates a new project for an organization.",
+        "requestBody": {
+          "description": "Project creation request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectId"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Organization not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -117,6 +225,79 @@
         },
         "required": [
           "name"
+        ]
+      },
+      "UpdateOrganizationRequest": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the organization to update.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "name": {
+            "type": "string",
+            "description": "New name for the organization.",
+            "example": "UpdatedOrgName"
+          },
+          "description": {
+            "type": "string",
+            "description": "New description for the organization.",
+            "example": "This is an updated organization description."
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      },
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "$ref": "#/components/schemas/OrganizationId"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the project.",
+            "example": "Example Project"
+          },
+          "description": {
+            "type": "string",
+            "description": "Project description.",
+            "example": "This is an example project."
+          }
+        },
+        "required": [
+          "organizationId",
+          "name"
+        ]
+      },
+      "OrganizationId": {
+        "type": "object",
+        "properties": {
+          "organizationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for the organization.",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "organizationId"
+        ]
+      },
+      "ProjectId": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "description": "Unique identifier for the project.",
+            "example": 12345
+          }
+        },
+        "required": [
+          "projectId"
         ]
       },
       "OrganizationDTO": {
@@ -181,7 +362,9 @@
           "clientCredentials": {
             "tokenUrl": "https://example.com/oauth/token",
             "scopes": {
-              "organization:registerOrganization": "Permission to register an organization"
+              "organization:registerOrganization": "Permission to register an organization",
+              "organization:updateOrganization": "Permission to update an organization",
+              "organization:createProject": "Permission to create a project"
             }
           }
         }
