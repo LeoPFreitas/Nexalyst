@@ -1,17 +1,11 @@
 package com.nexalyst.apps.backend_core_api.service;
 
-import com.nexalyst.apps.backend_core_api.api.request.CreateProjectRequest;
 import com.nexalyst.apps.backend_core_api.api.request.RegisterOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.request.UpdateOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.response.OrganizationId;
-import com.nexalyst.apps.backend_core_api.api.response.ProjectId;
 import com.nexalyst.apps.backend_core_api.entity.OrganizationEntity;
-import com.nexalyst.apps.backend_core_api.entity.ProjectEntity;
 import com.nexalyst.apps.backend_core_api.exceptions.DuplicateOrganizationNameException;
-import com.nexalyst.apps.backend_core_api.exceptions.DuplicatedProjectNameException;
-import com.nexalyst.apps.backend_core_api.exceptions.OrganizationNotFoundException;
 import com.nexalyst.apps.backend_core_api.repository.OrganizationRepository;
-import com.nexalyst.apps.backend_core_api.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,14 +26,11 @@ class OrganizationServiceTest {
     @Mock
     private OrganizationRepository organizationRepository;
 
-    @Mock
-    private ProjectRepository projectRepository;
-
     private OrganizationService organizationService;
 
     @BeforeEach
     void setUp() {
-        organizationService = new OrganizationService(organizationRepository, projectRepository);
+        organizationService = new OrganizationService(organizationRepository);
     }
 
     @Test
@@ -140,79 +131,58 @@ class OrganizationServiceTest {
     }
 
     @Test
-    void createProject_ShouldReturnProjectId_WhenValidRequestProvided() {
+    void updateOrganization_ShouldNotCheckForDuplicateName_WhenNameIsNotChanged() {
         // Arrange
-        UUID organizationId = UUID.randomUUID();
-        String projectName = "Test Project";
-        String projectDescription = "Test Project Description";
+        UUID id = UUID.randomUUID();
+        String originalName = "Original Name";
+        String originalDescription = "Original Description";
+        String updatedDescription = "Updated Description";
 
-        OrganizationId orgId = new OrganizationId(organizationId);
-        CreateProjectRequest request = new CreateProjectRequest(orgId, projectName, projectDescription);
+        OrganizationEntity existingEntity = new OrganizationEntity(id, originalName, originalDescription, new LinkedHashSet<>());
+        OrganizationEntity updatedEntity = new OrganizationEntity(id, originalName, updatedDescription, new LinkedHashSet<>());
 
-        OrganizationEntity organizationEntity = new OrganizationEntity(organizationId, "Test Organization", "Test Description", new LinkedHashSet<>());
+        UpdateOrganizationRequest request = new UpdateOrganizationRequest(id, originalName, updatedDescription);
 
-        ProjectEntity savedProjectEntity = new ProjectEntity();
-        savedProjectEntity.setId(1);
-        savedProjectEntity.setName(projectName);
-        savedProjectEntity.setDescription(projectDescription);
-        savedProjectEntity.setOrganization(organizationEntity);
-
-        when(organizationRepository.findById(organizationId)).thenReturn(Optional.of(organizationEntity));
-        when(projectRepository.existsByNameAndOrganizationId(projectName, organizationId)).thenReturn(false);
-        when(projectRepository.save(any(ProjectEntity.class))).thenReturn(savedProjectEntity);
+        when(organizationRepository.findById(id)).thenReturn(Optional.of(existingEntity));
+        when(organizationRepository.save(any(OrganizationEntity.class))).thenReturn(updatedEntity);
 
         // Act
-        ProjectId result = organizationService.createProject(request);
+        OrganizationId result = organizationService.updateOrganization(request);
 
         // Assert
         assertNotNull(result);
-        assertEquals(1, result.projectId());
+        assertEquals(id, result.organizationId());
 
-        verify(organizationRepository, times(1)).findById(organizationId);
-        verify(projectRepository, times(1)).existsByNameAndOrganizationId(projectName, organizationId);
-        verify(projectRepository, times(1)).save(any(ProjectEntity.class));
+        verify(organizationRepository, times(1)).findById(id);
+        verify(organizationRepository, never()).existsByName(anyString());
+        verify(organizationRepository, times(1)).save(any(OrganizationEntity.class));
     }
 
     @Test
-    void createProject_ShouldThrowOrganizationNotFoundException_WhenOrganizationNotFound() {
+    void updateOrganization_ShouldUpdateDescriptionOnly_WhenNameIsNull() {
         // Arrange
-        UUID organizationId = UUID.randomUUID();
-        String projectName = "Test Project";
-        String projectDescription = "Test Project Description";
+        UUID id = UUID.randomUUID();
+        String originalName = "Original Name";
+        String originalDescription = "Original Description";
+        String updatedDescription = "Updated Description";
 
-        OrganizationId orgId = new OrganizationId(organizationId);
-        CreateProjectRequest request = new CreateProjectRequest(orgId, projectName, projectDescription);
+        OrganizationEntity existingEntity = new OrganizationEntity(id, originalName, originalDescription, new LinkedHashSet<>());
+        OrganizationEntity updatedEntity = new OrganizationEntity(id, originalName, updatedDescription, new LinkedHashSet<>());
 
-        when(organizationRepository.findById(organizationId)).thenReturn(Optional.empty());
+        UpdateOrganizationRequest request = new UpdateOrganizationRequest(id, null, updatedDescription);
 
-        // Act & Assert
-        assertThrows(OrganizationNotFoundException.class, () -> organizationService.createProject(request));
+        when(organizationRepository.findById(id)).thenReturn(Optional.of(existingEntity));
+        when(organizationRepository.save(any(OrganizationEntity.class))).thenReturn(updatedEntity);
 
-        verify(organizationRepository, times(1)).findById(organizationId);
-        verify(projectRepository, never()).existsByNameAndOrganizationId(anyString(), any(UUID.class));
-        verify(projectRepository, never()).save(any(ProjectEntity.class));
-    }
+        // Act
+        OrganizationId result = organizationService.updateOrganization(request);
 
-    @Test
-    void createProject_ShouldThrowDuplicatedProjectNameException_WhenProjectNameAlreadyExists() {
-        // Arrange
-        UUID organizationId = UUID.randomUUID();
-        String projectName = "Test Project";
-        String projectDescription = "Test Project Description";
+        // Assert
+        assertNotNull(result);
+        assertEquals(id, result.organizationId());
 
-        OrganizationId orgId = new OrganizationId(organizationId);
-        CreateProjectRequest request = new CreateProjectRequest(orgId, projectName, projectDescription);
-
-        OrganizationEntity organizationEntity = new OrganizationEntity(organizationId, "Test Organization", "Test Description", new LinkedHashSet<>());
-
-        when(organizationRepository.findById(organizationId)).thenReturn(Optional.of(organizationEntity));
-        when(projectRepository.existsByNameAndOrganizationId(projectName, organizationId)).thenReturn(true);
-
-        // Act & Assert
-        assertThrows(DuplicatedProjectNameException.class, () -> organizationService.createProject(request));
-
-        verify(organizationRepository, times(1)).findById(organizationId);
-        verify(projectRepository, times(1)).existsByNameAndOrganizationId(projectName, organizationId);
-        verify(projectRepository, never()).save(any(ProjectEntity.class));
+        verify(organizationRepository, times(1)).findById(id);
+        verify(organizationRepository, never()).existsByName(anyString());
+        verify(organizationRepository, times(1)).save(any(OrganizationEntity.class));
     }
 }

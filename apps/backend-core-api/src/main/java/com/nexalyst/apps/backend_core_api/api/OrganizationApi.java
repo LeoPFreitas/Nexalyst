@@ -1,10 +1,8 @@
 package com.nexalyst.apps.backend_core_api.api;
 
-import com.nexalyst.apps.backend_core_api.api.request.CreateProjectRequest;
 import com.nexalyst.apps.backend_core_api.api.request.RegisterOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.request.UpdateOrganizationRequest;
 import com.nexalyst.apps.backend_core_api.api.response.OrganizationId;
-import com.nexalyst.apps.backend_core_api.api.response.ProjectId;
 import com.nexalyst.apps.backend_core_api.service.OrganizationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,18 +46,5 @@ public class OrganizationApi {
         OrganizationId updatedOrganization = organizationService.updateOrganization(updateOrganizationRequest);
         return ResponseEntity.ok(updatedOrganization);
     }
-
-    @PostMapping("/createProject")
-    public ResponseEntity<?> createProject(@Valid @RequestBody CreateProjectRequest createProjectRequest) {
-        ProjectId createdProject = organizationService.createProject(createProjectRequest);
-        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
-    }
-
-//    @PostMapping("/addProject")
-//    public ResponseEntity<?> addProjectToOrganization(@RequestParam("organizationId") String organizationId,
-//                                                      @RequestParam("projectId") String projectId) {
-//        organizationService.addProjectToOrganization(organizationId, projectId);
-//        return ResponseEntity.ok().build();
-//    }
 }
 
