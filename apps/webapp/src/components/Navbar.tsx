@@ -19,11 +19,11 @@ import {SidebarTrigger} from "@/components/ui/sidebar";
 const Navbar = () => {
   const {setTheme} = useTheme()
   return (
-    <nav className="p-4 flex items-center justify-between">
+    <nav className="p-2 flex items-center justify-between">
       {/*LEFT*/}
       <SidebarTrigger/>
       {/*RIGHT*/}
-      <div className="p-4 flex items-center gap-4">
+      <div className="p-2 flex items-center gap-4">
         <Link href="/">Dashboard</Link>
         {/*Theme Menu*/}
         <DropdownMenu>
