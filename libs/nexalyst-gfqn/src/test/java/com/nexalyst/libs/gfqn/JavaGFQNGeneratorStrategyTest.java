@@ -22,7 +22,7 @@ class JavaGFQNGeneratorStrategyTest {
     @BeforeEach
     void setUp() {
         generator = new JavaGFQNGeneratorStrategy();
-        context = new GFQNContext("nexalyst", "libs", "gfqn");
+        context = new GFQNContext("nexalyst", "project", "system", "repository");
     }
 
     @Test
@@ -90,7 +90,7 @@ class JavaGFQNGeneratorStrategyTest {
         String qualifiedName = generator.generateLanguageQualifiedName(unit, context);
 
         // Expected format: {organization}.{project}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}
-        String expected = "nexalyst.libs.gfqn.java.Example.com.example.Example";
+        String expected = "nexalyst.project.system.repository.java.Example.com.example.Example";
         assertEquals(expected, qualifiedName);
     }
 

@@ -16,6 +16,8 @@ dependencies {
     annotationProcessor libs.spring.boot.configuration.processor
     annotationProcessor libs.lombok
     testImplementation libs.spring.boot.starter.test
+
+    implementation project(':libs:nexalyst-gfqn')
 }
 
 tasks.named('test') {
