@@ -8,10 +8,7 @@ public class GFQNService {
     private final Map<GFQNSupportedLanguages, GFQNGeneratorStrategy> strategyRegistry = new HashMap<>();
 
     public GFQNService() {
-        // Register default strategies here
         registerStrategy(new JavaGFQNGeneratorStrategy());
-        // You can add more strategies in the future like:
-        // registerStrategy(new PythonGFQNGeneratorStrategy());
     }
 
     public void registerStrategy(GFQNGeneratorStrategy strategy) {
@@ -20,7 +17,7 @@ public class GFQNService {
         }
     }
 
-    public String generateGFQN(CompilationUnit unit, GFQNContext context) {
+    public String generateGFQN(CompilationUnitMetadata unit, GFQNContext context) {
         GFQNSupportedLanguages language = unit.getLanguage();
 
         GFQNGeneratorStrategy strategy = strategyRegistry.get(language);
