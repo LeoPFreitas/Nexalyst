@@ -1,12 +1,12 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import AppSidebar from "@/components/AppSidebar";
 import {ThemeProvider} from "@/components/providers/theme-provider";
-import {SidebarProvider} from "@/components/ui/sidebar";
+import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
 import {cookies} from "next/headers";
 import React from "react";
+import {AppSidebar} from "@/components/AppSidebar";
+import {SiteHeader} from "@/components/site-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,11 +32,21 @@ export default async function RootLayout({children,}: Readonly<{ children: React
     <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex`}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <SidebarProvider defaultOpen={defaultOpen}>
-        <AppSidebar/>
-        <div className="flex-1 flex flex-col min-h-screen">
-          <Navbar/>
-          <main className="flex-1 p-4">{children}</main>
-        </div>
+        <AppSidebar variant="inset"/>
+        <SidebarInset>
+          <SiteHeader/>
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <div className="px-4 lg:px-6">
+                  <div className="flex flex-col gap-4">
+                    {children}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
       </SidebarProvider>
     </ThemeProvider>
     </body>
