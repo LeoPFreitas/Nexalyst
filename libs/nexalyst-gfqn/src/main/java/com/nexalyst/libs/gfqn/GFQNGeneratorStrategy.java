@@ -20,7 +20,7 @@ public interface GFQNGeneratorStrategy {
      * @param context The context containing organization, project, and repository information.
      * @return The generated language-qualified name.
      */
-    String generateLanguageQualifiedName(CompilationUnit unit, GFQNContext context);
+    String generateLanguageQualifiedName(CompilationUnitMetadata unit, GFQNContext context);
 
     /**
      * Get the supported programming language for this generator.
