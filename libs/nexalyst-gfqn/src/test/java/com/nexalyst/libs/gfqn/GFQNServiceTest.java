@@ -37,12 +37,13 @@ class GFQNServiceTest {
         // Create a Java compilation unit
         javaUnit = new CompilationUnitMetadata(javaFilePath, GFQNSupportedLanguages.JAVA);
 
-        // Create a Python compilation unit (file doesn't need to exist for this test)
-        pythonUnit = new CompilationUnitMetadata(
-                Path.of("/path/to/example.py"), 
-                GFQNSupportedLanguages.PYTHON);
+        // Create a Python file for testing
+        Path pythonFilePath = tempDir.resolve("example.py");
+        String pythonContent = "def hello():\n    print('Hello, World!')\n";
+        Files.writeString(pythonFilePath, pythonContent);
 
-        // Note: JavaGFQNGeneratorStrategy is already registered in the GFQNService constructor
+        // Create a Python compilation unit
+        pythonUnit = new CompilationUnitMetadata(pythonFilePath, GFQNSupportedLanguages.PYTHON);
     }
 
     @Test
@@ -55,10 +56,12 @@ class GFQNServiceTest {
                 String organization = context.organization();
                 String project = context.project();
                 String repository = context.repository();
-                String language = unit.getLanguageName();
-                String fileName = unit.getCompilationUnitPath().getFileName().toString().replace(".py", "");
+                String language = unit.getLanguage().getLanguage();
+                String fileName = unit.getPath().getFileName().toString().replace(".py", "");
+                String moduleName = "hello"; // Simulated module name extraction
 
-                return String.format("%s.%s.%s.%s.%s", organization, project, repository, language, fileName);
+                // Format similar to Java GFQN but with module name instead of package and class
+                return String.format("%s.%s.%s.%s.%s.%s", organization, project, repository, language, fileName, moduleName);
             }
 
             @Override
@@ -72,7 +75,18 @@ class GFQNServiceTest {
 
         // Test that the strategy works
         String gfqn = gfqnService.generateGFQN(pythonUnit, context);
-        assertEquals("nexalyst.libs.gfqn.python.example", gfqn);
+        assertEquals("nexalyst.libs.gfqn.python.example.hello", gfqn);
+    }
+
+    @Test
+    void testDefaultConstructor() {
+        // Test that the default constructor registers the JavaGFQNGeneratorStrategy
+        // by generating a GFQN for Java without registering any strategies
+        String gfqn = gfqnService.generateGFQN(javaUnit, context);
+
+        // Expected format: {organization}.{project}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}
+        String expected = "nexalyst.libs.gfqn.java.Example.com.example.Example";
+        assertEquals(expected, gfqn);
     }
 
     @Test
