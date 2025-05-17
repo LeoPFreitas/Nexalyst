@@ -34,10 +34,15 @@ class JavaGFQNGeneratorStrategyTest {
     }
 
     @Test
-    void testGenerateLanguageQualifiedNameWithNonJavaLanguage() {
+    void testGenerateLanguageQualifiedNameWithNonJavaLanguage() throws IOException {
+        // Create a Python file for testing
+        Path pythonFilePath = tempDir.resolve("Example.py");
+        String pythonContent = "def hello():\n    print('Hello, World!')\n";
+        Files.writeString(pythonFilePath, pythonContent);
+
         // Create a compilation unit with a non-Java language
         CompilationUnitMetadata unit = new CompilationUnitMetadata(
-                Path.of("/path/to/Example.py"), 
+                pythonFilePath, 
                 GFQNSupportedLanguages.PYTHON);
 
         // Verify that an IllegalArgumentException is thrown
@@ -48,17 +53,25 @@ class JavaGFQNGeneratorStrategyTest {
     }
 
     @Test
-    void testGenerateLanguageQualifiedNameWithNonexistentFile() {
-        // Create a compilation unit with a file path that does not exist
+    void testGenerateLanguageQualifiedNameWithNonexistentFile() throws IOException {
+        // Create a temporary file that we'll delete to simulate a non-existent file
+        Path javaFilePath = tempDir.resolve("Temporary.java");
+        String javaContent = "package com.example;\n\npublic class Temporary {\n}";
+        Files.writeString(javaFilePath, javaContent);
+
+        // Create a compilation unit with the file
         CompilationUnitMetadata unit = new CompilationUnitMetadata(
-                Path.of("/invalid/path/NonExistent.java"), 
+                javaFilePath, 
                 GFQNSupportedLanguages.JAVA);
+
+        // Delete the file to make it non-existent
+        Files.delete(javaFilePath);
 
         // Verify that a RuntimeException is thrown
         RuntimeException exception = assertThrows(RuntimeException.class, 
                 () -> generator.generateLanguageQualifiedName(unit, context));
 
-        assertEquals("File does not exist: /invalid/path/NonExistent.java", exception.getMessage());
+        assertEquals("File does not exist: " + javaFilePath, exception.getMessage());
     }
 
     @Test

@@ -38,11 +38,11 @@ public class JavaGFQNGeneratorStrategy implements GFQNGeneratorStrategy {
             throw new IllegalArgumentException("Unsupported language: " + unit.getLanguage());
         }
 
-        if (!unit.getCompilationUnitPath().toFile().exists()) {
-            throw new RuntimeException("File does not exist: " + unit.getCompilationUnitPath());
+        if (!unit.getPath().toFile().exists()) {
+            throw new RuntimeException("File does not exist: " + unit.getPath());
         }
 
-        File file = unit.getCompilationUnitPath().toFile();
+        File file = unit.getPath().toFile();
         CompilationUnit cu;
 
         try {
@@ -59,7 +59,7 @@ public class JavaGFQNGeneratorStrategy implements GFQNGeneratorStrategy {
             String organization = context.organization();
             String project = context.project();
             String repository = context.repository();
-            String language = unit.getLanguageName();
+            String language = unit.getLanguage().getLanguage();
             String fileName = file.getName().replace(".java", "");
 
             return String.format("%s.%s.%s.%s.%s.%s.%s", organization, project, repository, language, fileName, packageName, primaryTypeName);
