@@ -33,6 +33,10 @@
     {
       "name": "Organizations",
       "description": "Endpoints related to organization management."
+    },
+    {
+      "name": "Projects",
+      "description": "Endpoints related to project management."
     }
   ],
   "paths": {
@@ -157,15 +161,15 @@
         }
       }
     },
-    "/api/v1/organizations/createProject": {
+    "/api/v1/projects/createProject": {
       "post": {
         "tags": [
-          "Organizations"
+          "Projects"
         ],
         "security": [
           {
             "OAuth2": [
-              "organization:createProject"
+              "project:createProject"
             ]
           }
         ],
@@ -202,6 +206,75 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "A conflict occurred due to an existing project with the same name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/projects/updateProject": {
+      "put": {
+        "tags": [
+          "Projects"
+        ],
+        "security": [
+          {
+            "OAuth2": [
+              "project:updateProject"
+            ]
+          }
+        ],
+        "summary": "Update a project",
+        "description": "Updates an existing project. If a project with the specified name already exists, the operation will fail.",
+        "requestBody": {
+          "description": "Project update request",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectId"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A conflict occurred due to an existing project with the same name.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
           }
         }
       }
@@ -224,6 +297,30 @@
           }
         },
         "required": [
+          "name"
+        ]
+      },
+      "UpdateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "description": "Unique identifier for the project to update.",
+            "example": 12345
+          },
+          "name": {
+            "type": "string",
+            "description": "New name for the project.",
+            "example": "Updated Project Name"
+          },
+          "description": {
+            "type": "string",
+            "description": "New description for the project.",
+            "example": "This is an updated project description."
+          }
+        },
+        "required": [
+          "projectId",
           "name"
         ]
       },
@@ -364,7 +461,8 @@
             "scopes": {
               "organization:registerOrganization": "Permission to register an organization",
               "organization:updateOrganization": "Permission to update an organization",
-              "organization:createProject": "Permission to create a project"
+              "project:createProject": "Permission to create a project",
+              "project:updateProject": "Permission to update a project"
             }
           }
         }
