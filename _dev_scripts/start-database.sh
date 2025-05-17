@@ -18,6 +18,8 @@ EOF
 # Grant the user access to the database
 psql -d postgres -v ON_ERROR_STOP=1 <<EOF
 GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
+GRANT INSERT, SELECT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $DB_USER;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $DB_USER;
 EOF
 
 echo "Database '$DB_NAME' and user '$DB_USER' created successfully with access granted."
