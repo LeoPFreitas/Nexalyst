@@ -6,3 +6,4 @@ rootProject.name = 'Nexalyst'
 
 include 'apps:backend-core-api'
 include 'apps:webapp'
+include 'libs:nexalyst-gfqn'
