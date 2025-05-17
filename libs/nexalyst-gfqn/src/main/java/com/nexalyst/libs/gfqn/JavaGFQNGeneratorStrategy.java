@@ -14,13 +14,13 @@ import java.io.File;
  * file name, package name, and primary type name of the compilation unit.
  * <p>
  * The GFQN is constructed in the following format:
- * <pre>{organization}.{project}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}</pre>
+ * <pre>{organization}.{project}.{system}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}</pre>
  */
 public class JavaGFQNGeneratorStrategy implements GFQNGeneratorStrategy {
 
     /**
      * Generates a language-qualified name for a given Java compilation unit.
-     * The generated name is based on the organization, project, repository, language,
+     * The generated name is based on the organization, project, system, repository, language,
      * file name, package name, and primary type name of the compilation unit.
      *
      * @param unit    The metadata of the compilation unit, which includes the path to the file
@@ -58,11 +58,12 @@ public class JavaGFQNGeneratorStrategy implements GFQNGeneratorStrategy {
 
             String organization = context.organization();
             String project = context.project();
+            String system = context.system();
             String repository = context.repository();
             String language = unit.getLanguage().getLanguage();
             String fileName = file.getName().replace(".java", "");
 
-            return String.format("%s.%s.%s.%s.%s.%s.%s", organization, project, repository, language, fileName, packageName, primaryTypeName);
+            return String.format("%s.%s.%s.%s.%s.%s.%s.%s", organization, project, system, repository, language, fileName, packageName, primaryTypeName);
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse Java file: " + file.getAbsolutePath(), e);
         }

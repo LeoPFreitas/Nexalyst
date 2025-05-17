@@ -27,7 +27,7 @@ class GFQNServiceTest {
         gfqnService = new GFQNService();
 
         // Create a context
-        context = new GFQNContext("nexalyst", "libs", "gfqn");
+        context = new GFQNContext("nexalyst", "project", "system", "repository");
 
         // Create a Java file for testing
         Path javaFilePath = tempDir.resolve("Example.java");
@@ -55,13 +55,14 @@ class GFQNServiceTest {
                 // Return a mock GFQN for Python
                 String organization = context.organization();
                 String project = context.project();
+                String system = context.system();
                 String repository = context.repository();
                 String language = unit.getLanguage().getLanguage();
                 String fileName = unit.getPath().getFileName().toString().replace(".py", "");
                 String moduleName = "hello"; // Simulated module name extraction
 
                 // Format similar to Java GFQN but with module name instead of package and class
-                return String.format("%s.%s.%s.%s.%s.%s", organization, project, repository, language, fileName, moduleName);
+                return String.format("%s.%s.%s.%s.%s.%s.%s", organization, project, system, repository, language, fileName, moduleName);
             }
 
             @Override
@@ -75,7 +76,7 @@ class GFQNServiceTest {
 
         // Test that the strategy works
         String gfqn = gfqnService.generateGFQN(pythonUnit, context);
-        assertEquals("nexalyst.libs.gfqn.python.example.hello", gfqn);
+        assertEquals("nexalyst.project.system.repository.python.example.hello", gfqn);
     }
 
     @Test
@@ -85,7 +86,7 @@ class GFQNServiceTest {
         String gfqn = gfqnService.generateGFQN(javaUnit, context);
 
         // Expected format: {organization}.{project}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}
-        String expected = "nexalyst.libs.gfqn.java.Example.com.example.Example";
+        String expected = "nexalyst.project.system.repository.java.Example.com.example.Example";
         assertEquals(expected, gfqn);
     }
 
@@ -95,16 +96,14 @@ class GFQNServiceTest {
         String gfqn = gfqnService.generateGFQN(javaUnit, context);
 
         // Expected format: {organization}.{project}.{repository}.{language}.{fileName}.{packageName}.{primaryTypeName}
-        String expected = "nexalyst.libs.gfqn.java.Example.com.example.Example";
+        String expected = "nexalyst.project.system.repository.java.Example.com.example.Example";
         assertEquals(expected, gfqn);
     }
 
     @Test
     void testUnsupportedLanguage() {
         // Test that an exception is thrown for an unsupported language
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> {
-            gfqnService.generateGFQN(pythonUnit, context);
-        });
+        Exception exception = assertThrows(UnsupportedOperationException.class, () -> gfqnService.generateGFQN(pythonUnit, context));
 
         String expectedMessage = "No GFQN strategy found for language: PYTHON";
         String actualMessage = exception.getMessage();
